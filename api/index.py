@@ -34,16 +34,19 @@ def chat(req: ChatRequest):
 
         model = genai.GenerativeModel("gemini-pro")
 
-response = model.generate_content(
-    f"You are a helpful pharmacy assistant.\nUser: {req.message}",
-    generation_config={
-        "temperature": 0.3,
-        "max_output_tokens": 150
-    }
-)
-
+        response = model.generate_content(
+            f"You are a helpful pharmacy assistant.\nUser: {req.message}",
+            generation_config={
+                "temperature": 0.3,
+                "max_output_tokens": 150
+            }
+        )
 
         return {"reply": response.text}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
