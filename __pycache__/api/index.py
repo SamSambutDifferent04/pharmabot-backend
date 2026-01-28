@@ -31,3 +31,5 @@ def chat(req: ChatRequest):
         ]
     )
     return {"reply": response.choices[0].message.content}
+
+#redeploy
