@@ -14,7 +14,7 @@ class ChatResponse(BaseModel):
     reply: str
 
 @app.get("/")
-def health_check():
+def root():
     return {"status": "Pharma chatbot backend running"}
 
 @app.post("/chat", response_model=ChatResponse)
