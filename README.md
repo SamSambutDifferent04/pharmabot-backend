@@ -32,7 +32,7 @@ Features
 pharma-chatbot-backend/
 │
 ├── api/
-│ └── main.py # FastAPI entry point (Vercel serverless function)
+│ └── index.py # FastAPI entry point (Vercel serverless function)
 │
 ├── requirements.txt # Python dependencies
 ├── vercel.json # Vercel configuration
