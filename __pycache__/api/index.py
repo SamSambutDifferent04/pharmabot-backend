@@ -17,6 +17,10 @@ class ChatResponse(BaseModel):
 def root():
     return {"status": "Pharma chatbot backend running"}
 
+@app.get("/health")
+def health():
+    return {"ok": True}
+
 @app.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest):
     response = client.chat.completions.create(
