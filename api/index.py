@@ -32,7 +32,7 @@ def chat(req: ChatRequest):
     try:
         genai.configure(api_key=api_key)
 
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-1.0-pro")
 
         response = model.generate_content(
             f"You are a helpful pharmacy assistant.\nUser: {req.message}"
