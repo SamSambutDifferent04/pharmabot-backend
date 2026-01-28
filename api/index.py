@@ -32,11 +32,16 @@ def chat(req: ChatRequest):
     try:
         genai.configure(api_key=api_key)
 
-        model = genai.GenerativeModel("gemini-1.0-pro")
+        model = genai.GenerativeModel("gemini-pro")
 
-        response = model.generate_content(
-            f"You are a helpful pharmacy assistant.\nUser: {req.message}"
-        )
+response = model.generate_content(
+    f"You are a helpful pharmacy assistant.\nUser: {req.message}",
+    generation_config={
+        "temperature": 0.3,
+        "max_output_tokens": 150
+    }
+)
+
 
         return {"reply": response.text}
 
