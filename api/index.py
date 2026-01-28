@@ -14,6 +14,10 @@ class ChatResponse(BaseModel):
     reply: str
 
 @app.get("/")
+def read_root():
+    return {"Python": "on Vercel"}
+
+@app.get("/")
 def root():
     return {"status": "Pharma chatbot backend running"}
 
