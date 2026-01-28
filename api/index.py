@@ -1,21 +1,22 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from openai import OpenAI
 import os
 
 app = FastAPI()
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# ✅ Safe API key handling
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+if not OPENAI_API_KEY:
+    raise RuntimeError("OPENAI_API_KEY not set")
+
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 class ChatRequest(BaseModel):
     message: str
 
 class ChatResponse(BaseModel):
     reply: str
-
-@app.get("/")
-def read_root():
-    return {"Python": "on Vercel"}
 
 @app.get("/")
 def root():
@@ -27,11 +28,15 @@ def health():
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest):
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are a helpful pharmacy assistant."},
-            {"role": "user", "content": req.message}
-        ]
-    )
-    return {"reply": response.choices[0].message.content}
+    try:
+        response = client.responses.create(
+            model="gpt-4o-mini",
+            input=req.message
+        )
+
+        return {
+            "reply": response.output_text
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
