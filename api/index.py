@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from openai import OpenAI
+import google.generativeai as genai
 import os
 
 app = FastAPI()
@@ -13,7 +13,7 @@ class ChatResponse(BaseModel):
 
 @app.get("/")
 def root():
-    return {"status": "Pharma chatbot backend running"}
+    return {"status": "Pharma chatbot backend running (Gemini)"}
 
 @app.get("/health")
 def health():
@@ -21,25 +21,25 @@ def health():
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest):
-    api_key = os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY")
 
     if not api_key:
         raise HTTPException(
             status_code=500,
-            detail="OPENAI_API_KEY not configured"
+            detail="GEMINI_API_KEY not configured"
         )
 
     try:
-        client = OpenAI(api_key=api_key)
+        genai.configure(api_key=api_key)
 
-        response = client.responses.create(
-            model="gpt-4o-mini",
-            input=req.message
+        model = genai.GenerativeModel("gemini-1.5-flash")
+
+        response = model.generate_content(
+            f"You are a helpful pharmacy assistant.\nUser: {req.message}"
         )
 
-        return {"reply": response.output_text}
+        return {"reply": response.text}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-#redeploy
